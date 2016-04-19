@@ -21,9 +21,13 @@ public class TestMe {
 ////////////////////////////////////
 // Money
 //
-public struct Money {
+public struct Money: CustomStringConvertible, Mathematics {
     
-    public var amount : Int
+    public var description: String {
+        get {return "\(self.currency) \(self.amount)"}
+    }
+    
+    public var amount : Double
     public var currency : String
     private var exchanges : Dictionary<String, Double> = [
         "USD" : 1.0,
@@ -32,14 +36,14 @@ public struct Money {
         "CAN" : 1.25
     ]
     
-    public init(amount: Int, currency: String) {
+    public init(amount: Double, currency: String) {
         self.amount = amount;
         self.currency = currency;
     }
   
     public func convert(to: String) -> Money {
         let newAmt = (Double(self.amount) / exchanges[self.currency]!) * exchanges[to]!
-        let newMoney = Money(amount: Int(newAmt), currency: to)
+        let newMoney = Money(amount: newAmt, currency: to)
         return newMoney;
     }
   
@@ -69,7 +73,12 @@ public struct Money {
 ////////////////////////////////////
 // Job
 //
-public class Job {
+public class Job: CustomStringConvertible {
+    
+    public var description: String {
+        get { return "\(self.title) \(self.type)" }
+    }
+    
     public var title : String
     public var type : JobType
     public enum JobType {
@@ -109,7 +118,12 @@ public class Job {
 ////////////////////////////////////
 // Person
 //
-public class Person {
+public class Person: CustomStringConvertible {
+    
+    public var description: String {
+        get { return "[Person: firstName:\(self.firstName) lastName:\(self.lastName) age:\(self.age) job:\(self.job) spouse:\(self.spouse)]" }
+    }
+    
     public var firstName : String = ""
     public var lastName : String = ""
     public var age : Int = 0
@@ -148,7 +162,12 @@ public class Person {
 ////////////////////////////////////
 // Family
 //
-public class Family {
+public class Family: CustomStringConvertible {
+    
+    public var description: String {
+        get { return "\(self.members)" }
+    }
+    
     private var members : [Person] = []
 
     public init(spouse1: Person, spouse2: Person) {
@@ -181,7 +200,29 @@ public class Family {
     }
 }
 
+////////////////////////////////////
+// Mathematics
+//
+protocol Mathematics {
+    func add(to: Self) -> Self
+    func subtract(from: Self) -> Self
+}
 
-
-
+extension Double {
+    public var USD: Money {
+        get { return Money(amount: self, currency: "USD") }
+    }
+    
+    public var EUR: Money {
+        get { return Money(amount: self, currency: "EUR") }
+    }
+    
+    public var GBP: Money {
+        get { return Money(amount: self, currency: "GBP") }
+    }
+    
+    public var YEN: Money {
+        get { return Money(amount: self, currency: "YEN") }
+    }
+}
 
